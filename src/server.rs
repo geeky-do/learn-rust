@@ -1,3 +1,6 @@
+use std::io::Read;
+use std::net::TcpListener;
+
 pub struct Server {
     host: String,
     port: String,
@@ -9,6 +12,23 @@ impl Server {
     }
 
     pub fn run(self) {
-        println!("Running on {}:{}", self.host, self.port)
+        let address = format!("{}:{}", &self.host, &self.port);
+        println!("Running on {}", address);
+        let listener = TcpListener::bind(&address).unwrap();
+        loop {
+            match listener.accept() {
+                Ok((mut stream, addr)) => {
+                    println!("OK @{}", addr);
+                    let mut buffer = [0; 1024];
+                    match stream.read(&mut buffer) {
+                        Ok(_) => {
+                            println!("Received a frequest: {}", String::from_utf8_lossy(&buffer));
+                        }
+                        Err(e) => println!("Err {}", e),
+                    }
+                }
+                Err(e) => println!("Err {}", e),
+            }
+        }
     }
 }
