@@ -6,6 +6,7 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result as FmtResult;
 use std::str;
+use std::str::Utf8Error;
 
 pub struct Request {
     resource_name: String,
@@ -20,7 +21,7 @@ impl TryFrom<&[u8]> for Request {
             Ok(request) => {}
             Err(_) => {}
         }
-        let request = str::from_utf8(buf).or(Err(ParseError::InvalidEncoding))?;
+        let request = str::from_utf8(buf)?;
 
         unimplemented!()
     }
@@ -56,3 +57,8 @@ impl Debug for ParseError {
 }
 
 impl Error for ParseError {}
+impl From<Utf8Error> for ParseError {
+    fn from(_: Utf8Error) -> Self {
+        Self::InvalidEncoding
+    }
+}
