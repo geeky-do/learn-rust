@@ -29,7 +29,7 @@ impl Server {
                             let response = match Request::try_from(&buffer[..]) {
                                 Ok(request) => {
                                     dbg!(request);
-                                    Response::new(StatusCode::Ok, Some("Hiii".to_string()))
+                                    Response::new(StatusCode::Ok, Some("<h1>Hiii</h1>".to_string()))
                                 }
                                 Err(e) => {
                                     println!("Failed {}", e);
