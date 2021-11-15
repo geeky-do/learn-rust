@@ -25,7 +25,9 @@ impl Server {
                         Ok(_) => {
                             println!("Received a frequest: {}", String::from_utf8_lossy(&buffer));
                             match Request::try_from(&buffer[..]) {
-                                Ok(request) => {}
+                                Ok(request) => {
+                                    dbg!(request);
+                                }
                                 Err(e) => println!("Failed {}", e),
                             }
                         }
