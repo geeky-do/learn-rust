@@ -26,14 +26,18 @@ impl Server {
                     match stream.read(&mut buffer) {
                         Ok(_) => {
                             println!("Received a frequest: {}", String::from_utf8_lossy(&buffer));
-                            match Request::try_from(&buffer[..]) {
+                            let response = match Request::try_from(&buffer[..]) {
                                 Ok(request) => {
                                     dbg!(request);
-                                    let response =
-                                        Response::new(StatusCode::Ok, Some("Hiii".to_string()));
-                                    write!(stream, "{}", response);
+                                    Response::new(StatusCode::Ok, Some("Hiii".to_string()))
                                 }
-                                Err(e) => println!("Failed {}", e),
+                                Err(e) => {
+                                    println!("Failed {}", e);
+                                    Response::new(StatusCode::BadRequest, None)
+                                }
+                            };
+                            if let Err(e) = response.send(&mut stream) {
+                                println!("Failed to send response: {}", e)
                             }
                         }
                         Err(e) => println!("Err {}", e),
