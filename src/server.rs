@@ -1,6 +1,8 @@
 use crate::http::Request;
+use crate::http::Response;
+use crate::http::StatusCode;
 use std::convert::TryFrom;
-use std::io::Read;
+use std::io::{Read, Write};
 use std::net::TcpListener;
 pub struct Server {
     host: String,
@@ -27,6 +29,9 @@ impl Server {
                             match Request::try_from(&buffer[..]) {
                                 Ok(request) => {
                                     dbg!(request);
+                                    let response =
+                                        Response::new(StatusCode::Ok, Some("Hiii".to_string()));
+                                    write!(stream, "{}", response);
                                 }
                                 Err(e) => println!("Failed {}", e),
                             }
