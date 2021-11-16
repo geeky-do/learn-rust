@@ -21,7 +21,7 @@ impl Server {
         Self { host, port }
     }
 
-    pub fn run(self, handler: impl Handler) {
+    pub fn run(self, mut handler: impl Handler) {
         let address = format!("{}:{}", &self.host, &self.port);
         println!("Running on {}", address);
         let listener = TcpListener::bind(&address).unwrap();
